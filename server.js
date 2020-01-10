@@ -8,7 +8,7 @@ app.use(express.json());
 
 app.get("/", (req, res) => getItems(res));
 app.post("/post", (req, res) => postItem(req, res));
-// app.post("/bid", (req, res) => res.send("Bid on a product"));
+app.post("/bid", (req, res) => bidItem(req, res));
 
 app.listen(port, () => console.log("listening on ", port));
 
@@ -39,4 +39,20 @@ postItem = (req, res) => {
     res.json(data);
   });
   console.log(query.sql);
+};
+
+bidItem = (req, res) => {
+  const query = connection.query(
+    "UPDATE items SET ? WHERE ?",
+    [
+      {
+        price: req.body.price
+      },
+      { item: req.body.item }
+    ],
+    (error, data) => {
+      if (error) throw error;
+      res.send("updated");
+    }
+  );
 };
